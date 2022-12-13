@@ -9,12 +9,12 @@ def displayLog(result):
         print('result: ' + str(result.returncode))
     print('# ------------------------------------------- #')
 
-def main(originalImgPath, d):
-    imageConversionFast = subprocess.run('python ImageConversionFast.py ' + originalImgPath + ' ' + d)
+def main(originalImgPath, d, reductionRatio):
+    imageConversionFast = subprocess.run(['python3 /opt/MeasureActualDistanceFrom360DegreeImage/ImageConversionFast.py ' + originalImgPath + ' ' + d + ' ' + reductionRatio], shell=True)
 
     displayLog(imageConversionFast)
 
-    distanceMeasuement = subprocess.run('python DistanceMeasurement.py ' + d)
+    distanceMeasuement = subprocess.run(['python3 /opt/MeasureActualDistanceFrom360DegreeImage/DistanceMeasurement.py ' + d + " " + reductionRatio], shell=True)
 
     displayLog(distanceMeasuement)
 
@@ -26,5 +26,8 @@ if __name__ == '__main__':
 
     # 天井までの距離(d[m])
     d = args[2]
+    
+    # 縮小率
+    reductionRatio = args[3]
 
-    main(originalImgPath, d)
+    main(originalImgPath, d, reductionRatio)

@@ -26,6 +26,11 @@ size = rgbImg.size
 # d(m)
 d = float(args[2])
 
+# 縮小率(0で指定された場合は1(等倍とする))
+reductionRatio = 1
+if float(args[3]) != 0:
+    reductionRatio = float(args[3])
+
 # 天井までの距離(d)
 actualImgWidth = (d*2) * math.pi
 oneMetersPx = size[0] / actualImgWidth
@@ -42,7 +47,7 @@ img2DArray = np.array(img2D)
 for x in range(size[0]):
     for y in range(size[1]):
         # 画像視点の座標から中心視点の座標を取得する
-        CenterPerspectiveCoordinates = [x-centerCoordinatesX, -y+centerCoordinatesY]
+        CenterPerspectiveCoordinates = [(x-centerCoordinatesX)*reductionRatio, (-y+centerCoordinatesY)*reductionRatio]
 
         # ----------------------------------------------------------------------------- #
         # 取得したい2D画像のx, y座標を引数に指定することで、対応する360度画像のx座標を返す
@@ -82,7 +87,9 @@ for x in range(size[0]):
 img2D = Image.fromarray(img2DArray)
 
 # 画像を保存(2D)
-img2D.save('./output2dImg/2DImg.png')
+# img2D.save('./output2dImg/2DImg.png')
+
+img2D.save('/opt/MeasureActualDistanceFrom360DegreeImage/output2dImg/2DImg.png')
 
 # 画像を表示(2D)
 # img2D.show()

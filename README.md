@@ -1,7 +1,7 @@
 ## 起動方法
 
 ```
-python run.py {360度画像パス(360DegreeImg/~.jpeg)} {天井までの距離(m)}
+python run.py {360度画像パス(360DegreeImg/~.jpeg)} {天井までの距離(m)} {縮小率}
 ```
 
 ### 結果

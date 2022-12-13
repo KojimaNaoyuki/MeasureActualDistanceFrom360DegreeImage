@@ -8,7 +8,7 @@ import math
 import time
 
 class DistanceMeasurement:
-    def __init__(self, imgPath, resizeNum, d):
+    def __init__(self, imgPath, resizeNum, d, reductionRatio):
         self.colorimg = cv2.imread(imgPath, cv2.IMREAD_COLOR)
         if self.colorimg is None : return -1
 
@@ -19,7 +19,8 @@ class DistanceMeasurement:
         self.selectCoordinate = []
 
         # 1pxの実際の距離[mm]
-        self.onePxActualDistance = (1.168 * d)
+        # 1.168は画像サイズにより変化する
+        self.onePxActualDistance = (1.168 * d) * reductionRatio
 
         self.displayImg(self.colorimg)
 
@@ -47,6 +48,8 @@ class DistanceMeasurement:
 
                 # 面積(m^2をファイルに書き込み)
                 self.inputPlaceAreaValueToFile(str(self.getArea(actualLength) / 10000))
+
+                subprocess.run(["/opt/CongestionStatusGraspScript/post_v1_places.sh " + self.readPlaceName()], shell=True)
 
                 time.sleep(1)
 
@@ -114,6 +117,10 @@ class DistanceMeasurement:
         if( self.judgDiagonal(selectCoordinate[1], selectCoordinate[3], selectCoordinate[0], selectCoordinate[2]) ):
             return [selectCoordinate[1], selectCoordinate[3]]
 
+        if( self.judgDiagonal(selectCoordinate[0], selectCoordinate[3], selectCoordinate[1], selectCoordinate[2]) ):
+            return [selectCoordinate[0], selectCoordinate[3]]
+
+        print("error: " + str(selectCoordinate))
         return False
 
     def judgDiagonal(self, diagonalCandidate1, diagonalCandidate2, verificationCoordinates1, verificationCoordinates2):
@@ -175,15 +182,24 @@ class DistanceMeasurement:
     # 面積をファイルに書き込み
     # ========================================================================================= #
     def inputPlaceAreaValueToFile(self, area):
-        f = open('../CongestionStatusGraspScript/data/placeAreaValue.txt', 'w')
+        f = open('/opt/MeasureActualDistanceFrom360DegreeImage/data/placeAreaValue.txt', 'w')
         f.write(area)
         f.close()
+
+    # ========================================================================================= #
+    # 計測地点名を取得
+    # ========================================================================================= #
+    def readPlaceName(self):
+        f = open('/opt/CongestionStatusGraspScript/data/placeName.txt', 'r', encoding='UTF-8')
+        data = f.read()
+        f.close()
+        return data
     
 # ========================================================================================= #
 # 設定ファイル読み込み
 # ========================================================================================= #
 def readConfig():
-    f = open('./config/resize.txt', 'r')
+    f = open('/opt/MeasureActualDistanceFrom360DegreeImage/config/resize.txt', 'r')
     resizeNum = f.readlines()
     f.close()
     return resizeNum
@@ -194,4 +210,4 @@ if __name__ == '__main__':
     resizeNum = readConfig()
 
     # d = ?[m]
-    cornerCandidateSearch = DistanceMeasurement('./output2dImg/2DImg.png', int(resizeNum[0]), float(args[1]))
+    cornerCandidateSearch = DistanceMeasurement('/opt/MeasureActualDistanceFrom360DegreeImage/output2dImg/2DImg.png', int(resizeNum[0]), float(args[1]), float(args[2]))
