@@ -20,7 +20,7 @@ class DistanceMeasurement:
 
         # 1pxの実際の距離[mm]
         # 1.168は画像サイズにより変化する
-        self.onePxActualDistance = (1.168 * d) * reductionRatio
+        self.onePxActualDistance = (0.001168 * d) * reductionRatio
 
         self.displayImg(self.colorimg)
 
@@ -36,18 +36,17 @@ class DistanceMeasurement:
                 actualLength = self.getActualLength(self.selectCoordinate)
                 self.selectCoordinate.clear()
                 print('------------------------------------')
-                print(str(actualLength[0]) + "cm")
-                print(str(actualLength[1]) + "cm")
-                print(str(actualLength[2]) + "cm")
-                print(str(actualLength[3]) + "cm")
-                print("斜辺: " + str(actualLength[4]) + "cm")
+                print(str(actualLength[0]) + "m")
+                print(str(actualLength[1]) + "m")
+                print(str(actualLength[2]) + "m")
+                print(str(actualLength[3]) + "m")
+                print("斜辺: " + str(actualLength[4]) + "m")
                 print('------------ 面積 ------------')
-                print(str(self.getArea(actualLength)) + "cm^2")
-                print(str(self.getArea(actualLength) / 10000) + "m^2")
+                print(str(self.getArea(actualLength)) + "m^2")
                 print('------------------------------------')
 
                 # 面積(m^2をファイルに書き込み)
-                self.inputPlaceAreaValueToFile(str(self.getArea(actualLength) / 10000))
+                self.inputPlaceAreaValueToFile(str(self.getArea(actualLength)))
 
                 subprocess.run(["/opt/CongestionStatusGraspScript/post_v1_places.sh " + self.readPlaceName()], shell=True)
 
