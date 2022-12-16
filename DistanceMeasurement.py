@@ -181,7 +181,7 @@ class DistanceMeasurement:
     # 面積をファイルに書き込み
     # ========================================================================================= #
     def inputPlaceAreaValueToFile(self, area):
-        f = open('/opt/MeasureActualDistanceFrom360DegreeImage/data/placeAreaValue.txt', 'w')
+        f = open('/opt/CongestionStatusGraspScript/data/placeAreaValue.txt', 'w')
         f.write(area)
         f.close()
 
